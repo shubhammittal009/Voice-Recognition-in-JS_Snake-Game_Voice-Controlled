@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{{title}}</title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body id="body">
+  <h1>{{title}}</h1>
+  <h3>by Shubham Mittal</h3>
+  <canvas id="canvas" width="443" height="443"></canvas>
+  {{{body}}}
+  <script type="text/javascript">
+    var canvas = document.getElementById("canvas");
+    let code = (e) => {
+      let event = new Event("keydown", { bubbles: true });
+      event.which = e;
+      body.dispatchEvent(event);
+    }
+    var commands = {
+      'well': function () {
+        alert("yes")
+      },
+      'dial': () => { code(40) },
+      'left': () => { code(37); },
+      'right': () => { code(39); },
+      'down': () => { code(40); },
+      'up': () => { code(38); },
+      'clear': function () {
+        console.clear();
+      },
+    };
+    // Add our commands to annyang
+    window.addEventListener('keydown', function (e) {
+      console.log(e.which);
+    });
+    let commandval;
+    var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
+    recognition.lang = 'en-IN';
+    recognition.interimResults = true;
+    recognition.start();
+    console.log(recognition);
+    recognition.onresult = function (event) {
+      commandval = event.results[0][0].transcript;
+      console.log(commandval);
+      if (commands[(commandval.split(" ")[0])] !== undefined) {
+        commands[(commandval.split(" ")[0])]();
+        recognition.stop();
+      }
+      else {
+        s = 'https://robohash.org/' + commandval + '?set=set1';
+        canvas.style.backgroundImage = "url(" + s + ")";
+      }
+    };
+    recognition.onend = function () {
+      recognition.start();
+    }
+  </script>
+  <script src="/javascripts/snake.js"></script>
+</body>
+
+</html>
